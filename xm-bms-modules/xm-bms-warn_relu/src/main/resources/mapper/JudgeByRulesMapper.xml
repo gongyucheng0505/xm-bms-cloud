@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xm.bms.warnrelu.mapper.JudgeByRulesMapper">
+
+    <!-- 显式结果映射 -->
+    <resultMap id="BatteryWarningRuleMap" type="com.xm.bms.warnrelu.domain.BatteryWarningRule">
+        <id property="id" column="id"/>
+        <result property="ruleNo" column="rule_no"/>
+        <result property="name" column="name"/>
+        <result property="batteryType" column="battery_type"/>
+        <result property="ruleDesc" column="rule_desc"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!-- 使用 resultMap 查询 -->
+    <select id="selectByRuleNoAndBatteryType"
+            resultMap="BatteryWarningRuleMap">
+        SELECT
+            id,
+            rule_no,
+            name,
+            battery_type,
+            rule_desc,
+            create_time
+        FROM
+            warning_rule
+        WHERE
+            rule_no = #{ruleId}
+          AND battery_type = #{batteryType}
+        ORDER BY
+            create_time ASC
+    </select>
+
+</mapper>

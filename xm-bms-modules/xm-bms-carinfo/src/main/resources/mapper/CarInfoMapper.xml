@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xm.bms.carinfo.mapper.CarInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.xm.bms.carinfo.domain.CarInfo">
+        <id column="id" property="id"/>
+        <result column="vid" property="vid"/>
+        <result column="battery_type" property="batteryType"/>
+        <result column="total_km" property="totalKm"/>
+        <result column="health_rate" property="healthRate"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, vid,  battery_type, total_km, health_rate, create_time
+    </sql>
+
+        <select id="selectById" resultMap="BaseResultMap" parameterType="Long">
+            SELECT <include refid="Base_Column_List"/>
+            FROM car_info WHERE id = #{id}
+        </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM car_info
+    </select>
+
+    <insert id="insert" parameterType="com.xm.bms.carinfo.domain.CarInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO car_info (vid, battery_type, total_km, health_rate, create_time)
+        VALUES (#{vid}, #{batteryType}, #{totalKm}, #{healthRate}, #{createTime})
+    </insert>
+
+    <insert id="batchInsertOrUpdate" parameterType="java.util.List">
+        INSERT INTO car_info
+        (vid, battery_type, total_km, health_rate, create_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.vid},  #{item.batteryType}, #{item.totalKm}, #{item.healthRate}, #{item.createTime})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        battery_type = VALUES(battery_type),
+        total_km = VALUES(total_km),
+        health_rate = VALUES(health_rate),
+        create_time = VALUES(create_time)
+    </insert>
+
+    <update id="update" parameterType="com.xm.bms.carinfo.domain.CarInfo">
+        UPDATE car_info
+        SET vid = #{vid},
+            battery_type = #{batteryType},
+            total_km = #{totalKm},
+            health_rate = #{healthRate},
+            create_time = #{createTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM car_info WHERE id = #{id}
+    </delete>
+
+</mapper>

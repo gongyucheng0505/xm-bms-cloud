@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xm.bms.user.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.xm.bms.user.domain.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, password, phone, email, create_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM user
+    </select>
+
+    <insert id="insert" parameterType="com.xm.bms.user.domain.User">
+        INSERT INTO user (username, password, phone, email)
+        VALUES (#{username}, #{password}, #{phone}, #{email})
+    </insert>
+    <insert id="batchInsertOrUpdate" parameterType="java.util.List">
+        insert into user
+        (username, password, phone, email, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.username}, #{item.password}, #{item.phone}, #{item.email}, #{item.createTime})
+        </foreach>
+        on duplicate key update
+        password = values(password),
+        phone = values(phone),
+        email = values(email),
+        create_time = values(create_time)
+    </insert>
+
+
+
+    <update id="update" parameterType="com.xm.bms.user.domain.User">
+        UPDATE user
+        SET username = #{username},
+            password = #{password},
+            phone = #{phone},
+            email = #{email}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
+
+</mapper>

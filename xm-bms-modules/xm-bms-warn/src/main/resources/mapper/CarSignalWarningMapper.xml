@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xm.bms.warn.mapper.CarSignalWarningMapper">
+
+    <!-- BaseResultMap 用于结果映射 -->
+    <resultMap id="BaseResultMap" type="com.xm.bms.warn.domain.CarSignalWarning">
+        <id column="id" property="id"/>
+        <result column="car_id" property="carId"/>
+        <result column="rule_id" property="ruleId"/>
+        <result column="warn_level" property="warnLevel"/>
+        <result column="warn_name" property="warnName"/>
+        <result column="warn_time" property="warnTime"/>
+    </resultMap>
+
+    <!-- Base_Column_List 定义了查询时要选择的列 -->
+    <sql id="Base_Column_List">
+        id, car_id, rule_id, warn_level, warn_name, warn_time
+    </sql>
+
+    <!-- 查询单条记录 -->
+    <select id="selectById" resultMap="BaseResultMap" parameterType="Long">
+        SELECT <include refid="Base_Column_List"/>
+        FROM warning_info WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有记录 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM warning_info
+    </select>
+
+    <!-- 插入一条记录 -->
+    <insert id="insert" parameterType="com.xm.bms.warn.domain.CarSignalWarning" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO warning_info (car_id, rule_id, warn_level, warn_name, warn_time)
+        VALUES (#{carId}, #{ruleId}, #{warnLevel}, #{warnName}, #{warnTime})
+    </insert>
+
+    <!-- 更新记录 -->
+    <update id="update" parameterType="com.xm.bms.warn.domain.CarSignalWarning">
+        UPDATE warning_info
+        SET
+            car_id = #{carId},
+            rule_id = #{ruleId},
+            warn_level = #{warnLevel},
+            warn_name = #{warnName},
+            warn_time = #{warnTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM warning_info WHERE id = #{id}
+    </delete>
+
+    <!-- 根据 car_id 删除记录 -->
+    <delete id="deleteByCarId" parameterType="Long">
+        DELETE FROM warning_info WHERE car_id = #{carId}
+    </delete>
+
+    <insert id="batchInsertOrUpdate" parameterType="java.util.List">
+        INSERT INTO warning_info
+        (car_id, rule_id, warn_level, warn_name)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.carId}, #{item.ruleId}, #{item.warnLevel}, #{item.warnName})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        warn_level = VALUES(warn_level),
+        warn_name = VALUES(warn_name),
+        warn_time = VALUES(warn_time)
+    </insert>
+
+</mapper>

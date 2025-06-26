@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xm.bms.carinfo.mapper.CarSignalMapper">
+
+    <!-- BaseResultMap 用于结果映射 -->
+    <resultMap id="BaseResultMap" type="com.xm.bms.carinfo.domain.CarSignal">
+        <id column="id" property="id"/>
+        <result column="car_id" property="carId"/>
+        <result column="max_voltage" property="maxVoltage"/>
+        <result column="min_voltage" property="minVoltage"/>
+        <result column="max_current" property="maxCurrent"/>
+        <result column="min_current" property="minCurrent"/>
+        <result column="report_time" property="reportTime"/>
+    </resultMap>
+
+    <!-- Base_Column_List 定义了查询时要选择的列 -->
+    <sql id="Base_Column_List">
+        id, car_id, max_voltage, min_voltage, max_current, min_current, report_time
+    </sql>
+
+    <!-- 查询单条记录 -->
+    <select id="selectById" resultMap="BaseResultMap" parameterType="Long">
+        SELECT <include refid="Base_Column_List"/>
+        FROM car_signal WHERE car_id = #{carId}
+    </select>
+
+    <!-- 查询所有记录 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM car_signal
+    </select>
+
+    <!-- 插入一条记录 -->
+    <insert id="insert" parameterType="com.xm.bms.carinfo.domain.CarSignal" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO car_signal (car_id, max_voltage, min_voltage, max_current, min_current, report_time)
+        VALUES (#{carId}, #{maxVoltage}, #{minVoltage}, #{maxCurrent}, #{minCurrent}, #{reportTime})
+    </insert>
+
+    <!-- 更新记录 -->
+    <update id="update" parameterType="com.xm.bms.carinfo.domain.CarSignal">
+        UPDATE car_signal
+        SET
+            max_voltage = #{maxVoltage},
+            min_voltage = #{minVoltage},
+            max_current = #{maxCurrent},
+            min_current = #{minCurrent},
+            report_time = #{reportTime}
+        WHERE car_id = #{carId}
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM car_signal WHERE id = #{id}
+    </delete>
+
+    <!-- 删除车状态信息记录 -->
+    <delete id="deleteCarSignal" parameterType="Long">
+        DELETE FROM car_signal WHERE car_id = #{carId}
+    </delete>
+
+</mapper>
